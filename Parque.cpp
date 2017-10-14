@@ -4,12 +4,14 @@
 using namespace std;
 
 //////////////////////////////////////////////////////////////////////////////Infocartao
-
+Info::Infocartao(string name): nome (nome){
+	presente =false;
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////Parque de Estacionamento
 /*
- * @Param  lotaÁ„o do parque e o n˙mero m·ximo de clientes com acesso ao parque
+ * @Param  lota√ß√£o do parque e o n√∫mero m√°ximo de clientes com acesso ao parque
  * vector<InfoCartao> clientes; //tinha posto a inicializacao do vector a zero
  * _> lotacao e numMaximoClientes sao const
  */
@@ -20,7 +22,7 @@ ParqueEstacionamento::ParqueEstacionamento(unsigned int lot, unsigned int nMaxCl
 
 
 /*
- * @Return - o Ìndice no vetor clientes do cliente de nome nome, retornando -1 caso n„o exista
+ * @Return - o √≠ndice no vetor clientes do cliente de nome nome, retornando -1 caso n√£o exista
  */
 int ParqueEstacionamento::posicaoCliente(const string & nome) const{
 	for(unsigned int i=0; i < clientes.size(); i++){
@@ -32,10 +34,10 @@ int ParqueEstacionamento::posicaoCliente(const string & nome) const{
 
 
 /*
- *@Return o sucesso (true) ou insucesso (false) na adiÁ„o/registo de um novo cliente ao
- *	parque de estacionamento. Considere que o cliente est· inicialmente fora do parque
- *	Confirmar se o parque est· cheio ou nao
- *	Ver se È um novo cliente ou nao
+ *@Return o sucesso (true) ou insucesso (false) na adi√ß√£o/registo de um novo cliente ao
+ *	parque de estacionamento. Considere que o cliente est√° inicialmente fora do parque
+ *	Confirmar se o parque est√° cheio ou nao
+ *	Ver se √© um novo cliente ou nao
  *	se for adicionar cliente
  *
  */
@@ -45,7 +47,7 @@ bool ParqueEstacionamento::adicionaCliente(const string & nome){
 	if (posicaoCliente(nome) != -1) //ve se o cliente existe no vector
 		return false;
 
-	InfoCartao info;
+	InfoCartao info;  // tenho de criar um objectodo tipi InfoCartao
 	info.nome = nome;
 	info.presente =false;
 	clientes.push_back(info);
@@ -53,15 +55,16 @@ bool ParqueEstacionamento::adicionaCliente(const string & nome){
 }
 
 /*
- *Retorna false se o cliente n„o puder entrar
+ * *dereference operators 
+ *Retorna false se o cliente n√£o puder entrar
+ * A forma com eu vazia era da forma velha: logo
+ * A stl way √© como representada neste exemplo em baixo
  */
 bool ParqueEstacionamento::retiraCliente(const string & nome){
 	for(vector<InfoCartao>::iterator it =clientes.begin(): it != clientes.end(); it++){
 		if ( (*it).nome == nome){
-			if ((*it).presente == false){
 				clientes.erase(it);
 				return true;
-			}
 		}
 		else{return false};
 	}
@@ -71,7 +74,7 @@ bool ParqueEstacionamento::retiraCliente(const string & nome){
 /*
  *tem que verificar se o cliente existe no vector clientes
  *se existem tem cartao
- *se verifica se j· entrou
+ *se verifica se j√° entrou
  *se tudo antes ok entao muda-se o estado presente
  */
 bool ParqueEstacionamento::entrar(const string & nome){
@@ -142,8 +145,8 @@ unsigned int ParqueEstacionamento::getNumClientesAtuais() const{
 }
 
 /*Incrementa o parque de um valor p2. Equivale a adicionar ao clientes deste parque os clientes de p2.
- * Se tale excede o numero maximo de clientes do parqe, sÛ sao adicionados os primeiros clientes p2 atÈ
- * esse liite m·ximo
+ * Se tale excede o numero maximo de clientes do parqe, s√≥ sao adicionados os primeiros clientes p2 at√©
+ * esse liite m√°ximo
  *
  *Nota: this means pointer to the object, so *this is an object. So you are returning an object ie,
  * *this returns a reference to the object.
