@@ -1,0 +1,57 @@
+Static: The Multipurpose Keyword
+
+
+By Alex Allain
+Most C++ keywords allow you to do one thing. You use int to declare an int, or that a function returns an int or expects an int as an argument. You use new to allocate memory, and delete to free memory. You use const to indicate that a variable's value cannot be changed. Ironically, the keyword static, though the word means "unchanging," has multiple (and apparently unrelated) uses. The keyword static can be used in three major contexts: inside a function, inside a class definition, and in front of a global variable inside a file making up a multifile program.
+
+
+ 
+The use of static inside a function is the simplest. It simply means that once the variable has been initialized, it remains in memory until the end of the program. You can think of it as saying that the variable sticks around, maintaining its value, until the program completely ends. For instance, you can use a static variable to record the number of times a function has been called simply by including the lines static int count =0; and count++; inside the function. Because count is a static variable, the line "static int count = 0;" will only be executed once. Whenever the function is called, count will have the last value assigned to it.
+
+You can also use static in this fashion to prevent a variable from being reinitialized inside a loop. For instance, in the following code, number_of_times comes out to be 100, even though the line "static int number_of_times = 0;" is inside the inner loop, where it would apparently be executed every time the program loops. The trick is that the keyword static prevents re-initialization of the variable. One feature of using a static keyword is that it happens to be initialized to zero automatically for you -- but don't rely on this behavior (it makes your intention unclear).
+
+for(int x=0; x<10; x++)
+{
+  for(int y=0; y<10; y++)
+  {
+    static int number_of_times = 0;
+    number_of_times++;
+  }
+}
+You might use a static variable in order to preserve information about the last value a function returned, such as if you wanted to store the maximum value calculated by a function. If you are doing string parsing, you might also store the last token returned by the function in order to be able to fetch it simply by calling the function with an argument indicating it should return the last token.
+
+The second use of static is inside a class definition. While most variables declared inside a class occur on an instance-by-instance basis (which is to say that for each instance of a class, the variable can have a different value), a static member variable has the same value in any instance of the class and doesn't even require an instance of the class to exist. A helpful way to think about it is to imagine that the static variables of a class contain information essential to the making of new member objects (as though a class definition were, to borrow an analogy from The Java Programming Language, a factory). For instance, if you wanted to number your instances of a class, you could use a static member variable to keep track of the last number used. Importantly, it is good syntax to refer to static member functions through the use of a class name (class_name::x; rather than instance_of_class.x;). Doing so helps to remind the programmer that static member variables do not belong to a single instance of the class and that you don't need to have a single instance of a class to use a static member variable. As you have probably noticed, to access the static member, you use the scope operator, ::, when you refer to it through the name of the class.
+
+An important detail to keep in mind when debugging or implementing a program using a static class member is that you cannot initialize the static class member inside of the class. In fact, if you decide to put your code in a header file, you cannot even initialize the static variable inside of the header file; do it in a .cpp file instead. Moreover, you are required to initialize the static class member or it will not be in scope. (The syntax is a bit weird: "type class_name::static_variable = value".)
+
+You can also have static member functions of a class. Static member functions are functions that do not require an instance of the class, and are called the same way you access static member variables -- with the class name rather than a variable name. (E.g. a_class::static_function(); rather than an_instance.function();) Static member functions can only operate on static members, as they do not belong to specific instances of a class. Static member functions can be used to modify static member variables to keep track of their values -- for instance, you might use a static member function if you chose to use a counter to give each instance of a class a unique id.
+
+For instance, you could use the following code:
+class user
+{
+  private:
+  int id;
+  static int next_id;
+
+  public:
+  static int next_user_id()
+  {
+    next_id++;
+    return next_id;
+  }
+  /* More stuff for the class user */
+  user()
+  {
+    id = user::next_id++; //or, id = user.next_user_id();
+  }
+};
+int user::next_id = 0;
+Notice that you must include the type of the static variable when you set it!
+The line
+
+user a_user;
+would set id to the next id number not assigned to any other user through this process. Note that it would be good style to declare id as a const.
+
+The last use of static is as a global variable inside a file of code. In this case, the use of static indicates that source code in other files that are part of the project cannot access the variable. Only code inside the single file can see the variable. (It's scope -- or visibility -- is limited to the file.) This technique can be used to simulate object oriented code because it limits visibility of a variable and thus helps avoid naming conflicts. This use of static is a holdover from C.
+
+		
